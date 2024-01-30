@@ -1,0 +1,23 @@
+{
+  "name": "content-mangement-system-module-12",
+  "version": "1.0.0",
+  "description": "company database used to track employees. projects main focus is to use node.js, inquirer, and mysql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RPMcQuigg/Content-Management-Sytem-Module-12.git"
+  },
+  "author": "Rutter McQuigg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RPMcQuigg/Content-Management-Sytem-Module-12/issues"
+  },
+  "homepage": "https://github.com/RPMcQuigg/Content-Management-Sytem-Module-12#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql": "^2.18.1"
+  }
+}

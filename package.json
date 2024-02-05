@@ -18,6 +18,6 @@
   "homepage": "https://github.com/RPMcQuigg/Content-Management-Sytem-Module-12#readme",
   "dependencies": {
     "inquirer": "^8.2.4",
-    "mysql": "^2.18.1"
+    "mysql2": "^2.2.5"
   }
 }

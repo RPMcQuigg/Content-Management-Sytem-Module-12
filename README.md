@@ -5,6 +5,7 @@
 2. Added gitignore file for node and json.
 3. added tables and databases for sql. Project runs but needs to be refined
 4. refined project. project runs smooth and as desired. added How to use section in README.
+5. Added .gitignore.
 
 ### How To Us
 1. Clone the repo to your system

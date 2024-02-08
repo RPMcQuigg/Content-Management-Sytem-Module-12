@@ -4,16 +4,13 @@ const inquirer = require('inquirer');
 const connection = mysql.createConnection(
   {
     host: '127.0.0.1',
-    // MySQL username,
     user: 'root',
-    // MySQL password
     password: 'rootroot',
     database: 'employee_management'
   },
   console.log(`Connected to the classlist_db database.`)
 );
 
-// Start the application
 function startApp() {
   inquirer
     .prompt({
@@ -24,6 +21,7 @@ function startApp() {
         'View all departments',
         'View all roles',
         'View all employees',
+        'Add a department',
         'Add a role',
         'Add an employee',
         'Update an employee role',
@@ -44,7 +42,7 @@ function startApp() {
           viewEmployees();
           break;
 
-          case 'Add a department':
+        case 'Add a department':
           addDepartment();
           break;
 
@@ -71,20 +69,18 @@ function startApp() {
     });
 }
 
-// Function to view all departments
 function viewDepartments() {
-  const query = 'SELECT * FROM department';
+  const query = 'SELECT * FROM departments';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
     startApp();
   });
 }
-
 
 function viewRoles() {
   const query =
-    'SELECT role.title, role.id, department.name AS department, role.salary FROM role INNER JOIN department ON role.department_id = department.id';
+    'SELECT roles.id, roles.title, roles.salary, departments.name AS departments FROM roles INNER JOIN departments ON roles.department_id = departments.id';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -92,10 +88,9 @@ function viewRoles() {
   });
 }
 
-
 function viewEmployees() {
   const query =
-    'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id';
+    'SELECT employees.id, employees.first_name, employees.last_name, roles.title AS job_title, departments.name AS departments, roles.salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON employees.manager_id = manager.id';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -108,7 +103,7 @@ function addDepartment() {
     .prompt({
       name: 'name',
       type: 'input',
-      message: 'Enter the name of the department:',
+      message: 'Enter the name of the departments:',
     })
     .then((answer) => {
       const query = 'INSERT INTO department SET ?';
@@ -120,10 +115,8 @@ function addDepartment() {
     });
 }
 
-
 function addRole() {
-
-  const query = 'SELECT * FROM department';
+  const query = 'SELECT * FROM departments';
   connection.query(query, (err, departments) => {
     if (err) throw err;
 
@@ -157,7 +150,7 @@ function addRole() {
           department_id: departmentId,
         };
 
-        const query = 'INSERT INTO role SET ?';
+        const query = 'INSERT INTO roles SET ?';
         connection.query(query, role, (err) => {
           if (err) throw err;
           console.log('Role added successfully!');
@@ -167,12 +160,10 @@ function addRole() {
   });
 }
 
-
 function addEmployee() {
-
-  const queryRoles = 'SELECT * FROM role';
+  const queryRoles = 'SELECT * FROM roles';
   const queryEmployees =
-    'SELECT id, first_name, last_name FROM employee WHERE manager_id IS NULL';
+    'SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL';
 
   connection.query(queryRoles, (err, roles) => {
     if (err) throw err;
@@ -226,12 +217,9 @@ function addEmployee() {
   });
 }
 
-
 function updateEmployeeRole() {
-
-  const queryEmployees = 'SELECT * FROM employee';
-  const queryRoles = 'SELECT * FROM role';
-
+  const queryEmployees = 'SELECT * FROM employees';
+  const queryRoles = 'SELECT * FROM roles';
 
   connection.query(queryEmployees, (err, employees) => {
     if (err) throw err;
@@ -261,21 +249,19 @@ function updateEmployeeRole() {
           },
         ])
         .then((answers) => {
-          
           const { employee, newRole } = answers;
 
-          
-          const updateQuery = 'UPDATE employee SET role_id = ? WHERE id = ?';
+          const updateQuery =
+            'UPDATE employee SET role_id = ? WHERE id = ?';
           connection.query(updateQuery, [newRole, employee], (err) => {
             if (err) throw err;
 
             console.log('Employee role updated successfully!');
-            startApp(); 
+            startApp();
           });
         });
     });
   });
 }
 
-
-startApp()
+startApp();
